@@ -5,6 +5,10 @@ import networkx as nx
 from math import cos, sin, pi
 from docx import Document
 from docx.shared import Inches
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Image, Spacer, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 # ----------------------
 # 1. Bar Graph
@@ -27,19 +31,17 @@ def create_bar_chart():
     ax.set_xlabel('Count', fontsize=10)
     ax.set_ylabel('Label', fontsize=10)
 
-    # im actually tweaking this wont move to the right place
     ax.legend(
         title='Legend', 
-        loc='best', 
-        bbox_to_anchor=(0, 1.02), 
-        ncol=2, 
-        frameon=False, 
+        loc='upper left',
+        bbox_to_anchor=(1, 1),
+        frameon=True,
         fontsize=9
     )
 
     for container in ax.containers:
         labels = [f'{int(value)}' if value > 0 else '' for value in container.datavalues]
-        ax.bar_label(container, labels=labels, label_type='edge', padding=3, fontsize=8)
+        ax.bar_label(container, labels=labels, label_type='center', fontsize=8, color='white')
 
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig('bar_chart.png', dpi=300, bbox_inches='tight')
@@ -172,10 +174,21 @@ def collate_graphs():
 # 5. Create PDF Sample
 # ----------------------
 def create_pdf():
-    doc = Document()
-    doc.add_heading('Collated Graphs', 0)
-    doc.add_picture('collated.png', width=Inches(8.5))
-    doc.save('collated_sample.docx')
+    pdf_file = "collated_graphs.pdf"
+    doc = SimpleDocTemplate(pdf_file, pagesize=letter)
+    
+
+    styles = getSampleStyleSheet()
+    label_text = Paragraph("Collated Graphs", styles["Title"])
+    collated_img = Image("collated.png", width=400, height=250)
+    
+    content = [
+        label_text,
+        Spacer(1, 10),
+        collated_img
+    ]
+    
+    doc.build(content)
 
 # ----------------------
 # Run All Functions
