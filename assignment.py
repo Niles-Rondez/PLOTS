@@ -11,12 +11,10 @@ from docx.shared import Inches
 # ----------------------
 
 def create_bar_chart():
-    # Load and preprocess the data
     df = pd.read_csv('bar_assignment.csv')
     df.replace({0: 'No', 1: 'Yes'}, inplace=True)
     df_grouped = df.groupby(['LABEL', 'COUNT']).size().unstack(fill_value=0)
 
-    # Create the plot
     fig, ax = plt.subplots(figsize=(8, 5)) 
     bar_plot = df_grouped.plot(
         kind='barh', 
@@ -25,15 +23,14 @@ def create_bar_chart():
         color=['red', 'blue']
     )
 
-    # Titles
-    ax.set_title('Bar Chart Representation of Labels and Counts', loc='left', fontsize=12, pad=10)
+    ax.set_title('Bar Graph', loc='left', fontsize=12, pad=10)
     ax.set_xlabel('Count', fontsize=10)
     ax.set_ylabel('Label', fontsize=10)
 
-    # Legend of Zelda
+    # im actually tweaking this wont move to the right place
     ax.legend(
-        title='COUNT', 
-        loc='upper left', 
+        title='Legend', 
+        loc='best', 
         bbox_to_anchor=(0, 1.02), 
         ncol=2, 
         frameon=False, 
